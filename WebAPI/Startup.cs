@@ -14,6 +14,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WebAPI.Data;
+using WebAPI.Interfaces;
+using WebAPI.Repositories;
 
 namespace WebAPI
 {
@@ -33,6 +35,8 @@ namespace WebAPI
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("Local"));
             });
+            services.AddScoped<IProductRepository, ProductRepository>();
+
             //services.AddDbContext<ProductContext>(x =>
             //{
             //    x.UseSqlServer(services.Configuration.GetConnectionString("Local"), option =>
