@@ -26,6 +26,13 @@ namespace WebAPI.Repositories
         {
             return await _context.Products4.SingleOrDefaultAsync(x=>x.Id==id);
         }
+
+        public async Task<Product> CreateProduct(Product product)
+        {
+            await _context.Products4.AddAsync(product);
+            await _context.SaveChangesAsync();
+            return product;
+        }
     }
 }
 

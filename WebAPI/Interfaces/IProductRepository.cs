@@ -8,5 +8,6 @@ namespace WebAPI.Interfaces
     {
         public Task<List<Product>> GetAllAsync();
         public Task<Product> GetByIdAsync(int id);
+        public Task<Product> CreateProduct(Product product);
     }
 }

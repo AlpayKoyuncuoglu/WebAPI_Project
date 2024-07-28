@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             //return await _productRepository.GetAllAsync();
-            var result =  await _productRepository.GetAllAsync();
+            var result = await _productRepository.GetAllAsync();
             return Ok(result);
         }
 
@@ -42,7 +42,13 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             return Ok(data);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(Product product)
+        {
+            var addedProduct = await _productRepository.CreateProduct(product);
+            return Created(string.Empty, addedProduct);
         }
 
         //[HttpGet]
