@@ -45,10 +45,35 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(Product product)
+        public async Task<IActionResult> Create(Product product)
         {
-            var addedProduct = await _productRepository.CreateProduct(product);
+            var addedProduct = await _productRepository.CreateAsync(product);
             return Created(string.Empty, addedProduct);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(Product product)
+        {
+            var productToUpdate=await _productRepository.GetByIdAsync(product.Id);
+            if (productToUpdate == null)
+            {
+                return NotFound(product.Id);
+            }
+
+            await _productRepository.UpdateAsync(product);
+            return Ok(productToUpdate);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveAsync(int id)
+        {
+            var productToRemove = await _productRepository.GetByIdAsync(id);
+            if (productToRemove == null)
+            {
+                return NotFound(id);
+            }
+            await _productRepository.RemoveAsync(id);
+            return NoContent();
         }
 
         //[HttpGet]
