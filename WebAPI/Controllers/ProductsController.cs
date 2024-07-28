@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using WebAPI.Data;
 using WebAPI.Interfaces;
+using static System.Net.WebRequestMethods;
 
 namespace WebAPI.Controllers
 {
@@ -54,7 +57,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(Product product)
         {
-            var productToUpdate=await _productRepository.GetByIdAsync(product.Id);
+            var productToUpdate = await _productRepository.GetByIdAsync(product.Id);
             if (productToUpdate == null)
             {
                 return NotFound(product.Id);
@@ -76,6 +79,15 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadAsync(IFormFile formFile)
+        {
+            var newName = Guid.NewGuid() + "" + Path.GetExtension(formFile.FileName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", newName);
+            var stream = new FileStream(path, FileMode.Create);
+            await formFile.CopyToAsync(stream);
+            return Created(string.Empty, formFile);
+        }
         //[HttpGet]
         //public IActionResult GetProducts()
         //{
@@ -94,6 +106,20 @@ namespace WebAPI.Controllers
     }
 }
 
+//var newName = Guid.NewGuid() + "" + Path.GetExtension(formFile.FileName);
+//
+//Guid.NewGuid() yeni bir GUID (Globally Unique Identifier) oluşturur. Bu, dosya için benzersiz bir isim sağlamak için kullanılır.
+//Path.GetExtension(formFile.FileName) dosyanın uzantısını alır (örneğin, .jpg, .txt).
+//GUID ve uzantı birleştirilerek dosya ismi oluşturulur. Bu, dosya çakışmalarını önlemek için kullanılır.
+//var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", newName);
+//
+//Directory.GetCurrentDirectory() uygulamanın çalışma dizinini alır.
+//Path.Combine bu dizinle wwwroot klasörünü ve yeni dosya ismini birleştirir.
+//path değişkeni, dosyanın sunucuda kaydedileceği tam yolu belirtir.
+//var stream = new FileStream(path, FileMode.Create);
+//
+//FileStream sınıfı, dosya ile okuma ve yazma işlemleri yapmanıza olanak tanır.
+//FileMode.Create parametresi, belirtilen dosya yolunda yeni bir dosya oluşturur (dosya varsa üzerine yazar).
 
 //Repository Pattern, yazılım geliştirmede veri erişimini soyutlamak ve düzenlemek için kullanılan bir tasarım desenidir. Temel amacı, veri erişim kodunu iş mantığından ayırmak ve kodun test edilebilirliğini, bakımını ve yeniden kullanımını artırmaktır. İşte Repository Pattern’ın temel kullanım amaçları ve avantajları:
 
