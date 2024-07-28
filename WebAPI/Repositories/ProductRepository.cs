@@ -24,15 +24,39 @@ namespace WebAPI.Repositories
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            return await _context.Products4.SingleOrDefaultAsync(x=>x.Id==id);
+            return await _context.Products4.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Product> CreateProduct(Product product)
+        public async Task<Product> CreateAsync(Product product)
         {
             await _context.Products4.AddAsync(product);
             await _context.SaveChangesAsync();
             return product;
         }
+
+        public async Task<Product> UpdateAsync(Product product)
+        {
+            var productToUpdate = await _context.Products4.FindAsync(product.Id);
+            _context.Entry(productToUpdate).CurrentValues.SetValues(product);
+            await _context.SaveChangesAsync();
+            return productToUpdate;
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+            var removeEntity= await _context.Products4.FindAsync(id);
+            _context.Products4.Remove(removeEntity);
+            _context.SaveChanges();
+        }
+
+        //public Task<Product> UpdateProduct(Product product)
+        //{
+        //    var productToUpdate = _context.Products4.FindAsync(product.Id);
+        //    _context.Products4.Update(productToUpdate);
+        //    _context.SaveChangesAsync();
+        //    return product;
+        //}
+
     }
 }
 
