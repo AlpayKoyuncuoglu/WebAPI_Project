@@ -34,11 +34,14 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        //public async Task<Product> GetById(int id)
-        public async Task<IActionResult> GetById(int id)
+        //[HttpGet("{id}")]
+        [HttpGet("getById")] // => for query
+        //api/products/1 => fromRoute
+        //api/products?id=1 => fromQuery
+        //[FromRoute] yukarıdaki id ifadesi aslında doğrudan route'tan almasını sağlar
+
+        public async Task<IActionResult> GetById([FromQuery]int id)
         {
-            //return await _productRepository.GetByIdAsync(id);
             var data = await _productRepository.GetByIdAsync(id);
             if (data == null)
             {
@@ -47,8 +50,10 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
+        //FromQuery olarak işaretlenirse api/products?id=1&name=telefon ...
         [HttpPost]
         public async Task<IActionResult> Create(Product product)
+        //public async Task<IActionResult> Create([FromBody]Product product) //=>nesne alıyorsa burada aslında fromBody vardır
         {
             var addedProduct = await _productRepository.CreateAsync(product);
             return Created(string.Empty, addedProduct);
